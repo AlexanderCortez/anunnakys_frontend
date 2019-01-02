@@ -1,9 +1,13 @@
 module.exports = {
     "env": {
         "browser": true,
+        "commonjs": true,
         "es6": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -74,7 +78,10 @@ module.exports = {
         "func-names": "error",
         "func-style": [
             "error",
-            "declaration"
+            "declaration",
+            {
+                "allowArrowFunctions": true
+            }
         ],
         "function-paren-newline": "off",
         "generator-star-spacing": "error",
@@ -93,7 +100,7 @@ module.exports = {
         "init-declarations": "error",
         "jsx-quotes": [
             "error",
-            "prefer-double"
+            "prefer-single"
         ],
         "key-spacing": "error",
         "keyword-spacing": [
@@ -233,7 +240,7 @@ module.exports = {
         ],
         "object-property-newline": "error",
         "object-shorthand": "error",
-        "one-var": "error",
+        "one-var": "off",
         "one-var-declaration-per-line": "error",
         "operator-assignment": "error",
         "operator-linebreak": "error",
@@ -288,7 +295,10 @@ module.exports = {
             "error",
             "never"
         ],
-        "template-tag-spacing": "error",
+        "template-tag-spacing": [
+            "error",
+            "never"
+        ],
         "unicode-bom": [
             "error",
             "never"
