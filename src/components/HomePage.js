@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import { Panel } from 'react-bootstrap';
+import ContentHeader from './globalComponents/ContentHeader';
 
 class HomePage extends Component {
   render() {
     return (
       <div>
-        Home
+        <ContentHeader 
+          title='Home'
+        />
+        <Panel>
+          <Panel.Body>
+            Basic panel example
+          </Panel.Body>
+        </Panel>
       </div>
     );
   }
 }
-
-const Section = styled.div`
-  border: 1px solid red;
-  height: 500px;
-`;
 
 export default HomePage;
