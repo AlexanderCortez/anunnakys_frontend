@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 class TimerSelect extends Component {
   constructor(props) {
@@ -9,12 +10,19 @@ class TimerSelect extends Component {
 
   getInitialState = () => {
     return {
-      hours: '01',
-      minutes: '55',
-      labelTime: 'am',
+      hours: this.getHourAndMinuteFormat(moment().hours()),
+      minutes: this.getHourAndMinuteFormat(moment().minutes()),
+      labelTime: moment().format('A'),
       showHoursTable: false,
       showMinutesTable:  false,
     }
+  }
+
+  getHourAndMinuteFormat = (hour) => {
+    if (hour < 10) {
+      return `0${hour}`;
+    }
+    return hour;
   }
 
   decreaseHour = (hours) => {
@@ -51,7 +59,7 @@ class TimerSelect extends Component {
     } 
     this.setState({
       hours: newHours,
-    });
+    }, () => this.returnTimeToParent());
   }
 
   handleMinutePick = (action) => {
@@ -83,7 +91,7 @@ class TimerSelect extends Component {
     this.setState({
       minutes: newMinutes,
       hours: newHours,
-    });
+    }, () => this.returnTimeToParent());
   }
 
   getOption = (time, handleIncrease, handleTableOptions) => {
@@ -123,7 +131,7 @@ class TimerSelect extends Component {
     const { labelTime } = this.state;
     this.setState({
       labelTime: labelTime === 'pm' ? 'am' : 'pm',
-    });
+    }, () => this.returnTimeToParent());
   }
 
   getTimeForm = () => {
@@ -152,14 +160,14 @@ class TimerSelect extends Component {
     this.setState({
       hours,
       showHoursTable: false,
-    });
+    }, () => this.returnTimeToParent());
   }
 
   setMinuteFromTable = (minutes) => {
     this.setState({
       minutes,
       showMinutesTable: false,
-    });
+    }, () => this.returnTimeToParent());
   }
 
   getHoursTable = () => {
@@ -251,6 +259,17 @@ class TimerSelect extends Component {
       return this.getMinutesTable();
     }
     return this.getTimeForm();
+  }
+
+  getTimeFormat = () => {
+    const { hours, minutes, labelTime } = this.state;
+    const time = `${hours}:${minutes} ${labelTime.toUpperCase()}`;
+    return time;
+  }
+
+  returnTimeToParent = () => {
+    const { onChange } = this.props;
+    onChange(this.getTimeFormat());
   }
 
   render() {
