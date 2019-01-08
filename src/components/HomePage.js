@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 import ContentHeader from './globalComponents/ContentHeader';
+import MainContainer from './globalComponents/MainContainer';
 
 class HomePage extends Component {
   render() {
+    const { history } = this.props;
+
     return (
-      <div>
-        <ContentHeader 
+      <MainContainer
+        history={history}
+      >
+        <ContentHeader
           title='Home'
         />
         <Panel>
@@ -14,7 +19,7 @@ class HomePage extends Component {
             Basic panel example
           </Panel.Body>
         </Panel>
-      </div>
+      </MainContainer>
     );
   }
 }

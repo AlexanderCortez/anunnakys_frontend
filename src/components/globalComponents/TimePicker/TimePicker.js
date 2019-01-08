@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
 import TimerSelect from './TimerSelect';
 
@@ -8,7 +9,7 @@ class TimePicker extends Component {
     super(props);
     this.state = {
       show: false,
-      time: '00:00'
+      time: moment().format('hh:mm A'),
     }
   }
 
@@ -17,6 +18,15 @@ class TimePicker extends Component {
     this.setState({
       show: !show,
     });
+  }
+
+  handleChange = (time) => {
+    const { onChange } = this.props;
+    if (onChange) {
+      this.setState({
+        time,
+      }, () => onChange(time));
+    }
   }
 
   render() {
@@ -37,7 +47,9 @@ class TimePicker extends Component {
               <Wrapper
                 id='timepicker'
               >
-                <TimerSelect />
+                <TimerSelect
+                  onChange={this.handleChange}
+                />
               </Wrapper>
             )
         }
