@@ -16,7 +16,7 @@ class HomePage extends Component {
         />
         <Panel>
           <Panel.Body>
-            Basic panel example
+            Here, upcoming events
           </Panel.Body>
         </Panel>
       </MainContainer>
