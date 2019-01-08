@@ -22,6 +22,7 @@ class Users extends Component {
   render() {
     const { history } = this.props;
     const { showModal } = this.state;
+    
     return (
       <MainContainer
         history={history}

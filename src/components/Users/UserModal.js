@@ -19,7 +19,6 @@ class UserModal extends Component {
   }
 
   handleChange = (e) => {
-    console.log('tyoing')
     const { name, value } = e.target;
     this.setState({
       [name]: value,
