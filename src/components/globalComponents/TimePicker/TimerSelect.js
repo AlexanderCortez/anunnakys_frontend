@@ -12,7 +12,7 @@ class TimerSelect extends Component {
     return {
       hours: this.getHourAndMinuteFormat(moment().hours()),
       minutes: this.getHourAndMinuteFormat(moment().minutes()),
-      labelTime: moment().format('A'),
+      labelTime: moment().format('A').toLowerCase(),
       showHoursTable: false,
       showMinutesTable:  false,
     }
@@ -185,11 +185,14 @@ class TimerSelect extends Component {
         }}
       >
         {
-          table.map(section => (
-            <LabelsContainer>
+          table.map((section, i) => (
+            <LabelsContainer
+              key={i}
+            >
               {
-                section.map(label => (
+                section.map((label, j) => (
                   <Label
+                    key={j}
                     onClick={() => this.setHourFromTable(label)}
                   >
                     {label}
@@ -218,11 +221,14 @@ class TimerSelect extends Component {
         }}
       >
         {
-          table.map(section => (
-            <LabelsContainer>
+          table.map((section, i) => (
+            <LabelsContainer
+              key={i}
+            >
               {
-                section.map(label => (
+                section.map((label, j) => (
                   <Label
+                    key={j}
                     onClick={() => this.setMinuteFromTable(label)}
                   >
                     {label}

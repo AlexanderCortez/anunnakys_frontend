@@ -15,6 +15,30 @@ class UserModal extends Component {
       name: '',
       password: '',
       username: '',
+      isAdmin: false,
+      id: null,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { edit, userToModify, show } = nextProps;
+    if (edit) {
+      const {
+        user_name,
+        user_username,
+        user_isAdmin,
+        user_id,
+      } = userToModify;
+      this.setState({
+        id: user_id,
+        name: user_name,
+        username: user_username,
+        isAdmin: user_isAdmin,
+      });
+    } else {
+      if (!show) {
+        this.setState(this.getInitialState())
+      }
     }
   }
 
@@ -25,8 +49,62 @@ class UserModal extends Component {
     });
   }
 
+  handleCheckboxChange = (e) => {
+    this.setState({
+      isAdmin: e.target.checked,
+    })
+  }
+
+  createUser = () => {
+    const { createUser } = this.props;
+    const {
+      username,
+      password,
+      isAdmin,
+      name,
+    } = this.state;
+    const data = {
+      username,
+      password,
+      name,
+      isAdmin: isAdmin ? 1 : 0, 
+    }
+    createUser(data);
+  }
+
+  modifyUser = () => {
+    const { modifyUser } = this.props;
+    const {
+      username,
+      password,
+      isAdmin,
+      name,
+      id,
+    } = this.state;
+    let setPassword = {}
+    if (!!password) {
+      setPassword = {
+        password,
+      }
+    }
+    const data = {
+      id,
+      username,
+      name,
+      isAdmin: isAdmin ? 1 : 0,
+      ...setPassword,
+    }
+    modifyUser(data);
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
+    const { edit } = this.props;
+    if (edit) {
+      this.modifyUser();
+    } else {
+      this.createUser();
+    }
   }
 
   generatePassword = () => {
@@ -48,13 +126,15 @@ class UserModal extends Component {
   }
 
   render() {
-    const { show, onHide } = this.props;
-    const { name, password, username } = this.state;
+    const { show, onHide, edit } = this.props;
+    const { name, password, username, isAdmin } = this.state;
 
     return (
       <Modal
         title='User'
-        onHide={onHide}
+        onHide={() => {
+          this.setState(this.getInitialState(), () => onHide());
+        }}
         show={show}
       >
         <Grid fluid>
@@ -62,6 +142,7 @@ class UserModal extends Component {
             <FormGroup>
               <ControlLabel>Name</ControlLabel>
               <FormControl
+                required
                 type="text"
                 value={name}
                 name='name'
@@ -72,6 +153,7 @@ class UserModal extends Component {
             <FormGroup>
               <ControlLabel>Username</ControlLabel>
               <FormControl
+                required
                 type="text"
                 value={username}
                 name='username'
@@ -86,6 +168,7 @@ class UserModal extends Component {
                 >
                   <ControlLabel>Password</ControlLabel>
                   <FormControl
+                    required={!edit}
                     type="text"
                     value={password}
                     name='password'
@@ -106,7 +189,11 @@ class UserModal extends Component {
               </Col>
               <Col md={4}>
                 <ButtonContainer>
-                  <Checkbox>
+                  <Checkbox
+                    name='isAdmin'
+                    defaultChecked={isAdmin}
+                    onChange={this.handleCheckboxChange}
+                  >
                     Is Admin
                 </Checkbox>
                 </ButtonContainer>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { goTo, getActualRoute } from '../actions/AppActions';
+import { goTo, getActualRoute } from '../../actions/AppActions';
 
 class SideBarMenu extends Component {
   isAnActiveRoute = (item) => {
