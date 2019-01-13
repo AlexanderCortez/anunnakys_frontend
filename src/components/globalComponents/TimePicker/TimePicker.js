@@ -36,10 +36,11 @@ class TimePicker extends Component {
       <FormGroup>
         <InputGroup>
           <FormControl
+            readOnly
             type="text"
             value={time}
           />
-          <InputGroup.Addon style={{ cursor: 'pointer' }} onClick={this.toogleTimePicker}><i class="far fa-clock"></i></InputGroup.Addon>
+          <InputGroup.Addon style={{ cursor: 'pointer' }} onClick={this.toogleTimePicker}><i className="far fa-clock"></i></InputGroup.Addon>
         </InputGroup>
         {
           show
