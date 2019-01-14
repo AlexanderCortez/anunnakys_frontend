@@ -1,9 +1,19 @@
+import React from 'react';
+
 const getAdminLabel = (cell, row) => {
-  const isAdmin = row.user_isAdmin;
-  if (isAdmin === 0) {
-    return 'USER';
+  const isAdmin = row.isAdmin;
+  if (isAdmin) {
+    return (
+      <span>
+        ADMIN
+      </span>
+    );
   } else {
-    return 'ADMIN';
+    return (
+      <span>
+        USER
+      </span>
+    );
   }
 };
 
@@ -12,10 +22,10 @@ const getTableColumns = (getEditOption, getRemoveOption) => {
     width: '75px',
   }
   const columns = [{
-    dataField: 'user_name',
+    dataField: 'name',
     text: 'Name',
   }, {
-    dataField: 'user_username',
+    dataField: 'username',
     text: 'Username'
   }, {
     isDummyField: true,

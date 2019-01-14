@@ -24,16 +24,16 @@ class UserModal extends Component {
     const { edit, userToModify, show } = nextProps;
     if (edit) {
       const {
-        user_name,
-        user_username,
-        user_isAdmin,
-        user_id,
+        name,
+        username,
+        isAdmin,
+        _id,
       } = userToModify;
       this.setState({
-        id: user_id,
-        name: user_name,
-        username: user_username,
-        isAdmin: user_isAdmin,
+        id: _id,
+        name,
+        username,
+        isAdmin,
       });
     } else {
       if (!show) {
@@ -67,7 +67,7 @@ class UserModal extends Component {
       username,
       password,
       name,
-      isAdmin: isAdmin ? 1 : 0, 
+      isAdmin, 
     }
     createUser(data);
   }
@@ -91,7 +91,7 @@ class UserModal extends Component {
       id,
       username,
       name,
-      isAdmin: isAdmin ? 1 : 0,
+      isAdmin,
       ...setPassword,
     }
     modifyUser(data);
