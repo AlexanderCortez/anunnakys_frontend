@@ -28,7 +28,7 @@ const UserReducer = (state = initialState, action) => {
       ...state,
       users: {
         ...state.users,
-        [newUser.user_id]: newUser,
+        [newUser._id]: newUser,
       },
       error: null,
     }
@@ -40,10 +40,10 @@ const UserReducer = (state = initialState, action) => {
       ...state,
       users: {
         ...state.users,
-        [user.user_id]: user,
+        [user._id]: user,
       },
       error: null,
-    }
+    };
   }
 
   return state;

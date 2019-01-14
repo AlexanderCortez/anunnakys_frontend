@@ -23,7 +23,7 @@ const getUsers = forceFetch => (dispatch, getState) => new Promise((resolve, rej
   if (sizeOfUsers === 0 || forceFetch) {
     axios.get('/api/user/')
     .then((response) => {
-        const users = _.keyBy(response.data.users, 'user_id');
+        const users = _.keyBy(response.data.users, '_id');
         dispatch(getAction(GET_USERS, users));
         resolve()
       })

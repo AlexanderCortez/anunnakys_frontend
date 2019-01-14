@@ -60,7 +60,7 @@ class Users extends Component {
     const newUsers = _.values(users).reverse();
     this.setState({
       users: newUsers,
-      userToModify: edit ? users[userToModify.user_id] : {},
+      userToModify: edit ? users[userToModify._id] : {},
     });
   }
 
@@ -125,9 +125,9 @@ class Users extends Component {
 
   removeUser = (userToModify) => {
     const { removeUser } = this.props;
-    const { user_id } = userToModify;
+    const { _id } = userToModify;
     const data = {
-      id: user_id,
+      id: _id,
     };
     removeUser(data)
       .then(() => {
@@ -153,9 +153,9 @@ class Users extends Component {
 
   getCurrentUser = (row) => {
     const { users } = this.state;
-    const { user_id } = row;
-    const newUsers = _.keyBy(users, 'user_id');
-    return newUsers[user_id];
+    const { _id } = row;
+    const newUsers = _.keyBy(users, '_id');
+    return newUsers[_id];
   }
 
   handleCloseSnackBar = () => {
@@ -240,7 +240,7 @@ class Users extends Component {
               <Row>
                 <Col md={12}>
                   <BootstrapTable
-                    keyField='user_id'
+                    keyField='_id'
                     data={users}
                     columns={columns}
                     pagination={paginationFactory()}
