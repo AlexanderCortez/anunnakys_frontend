@@ -43,7 +43,7 @@ class Users extends Component {
             type: 'error',
           },
         });
-      })
+      });
   }
 
   componentDidMount() {
@@ -94,7 +94,7 @@ class Users extends Component {
             type: 'error',
           },
         });
-      })
+      });
   }
 
   modifyUser = (data) => {

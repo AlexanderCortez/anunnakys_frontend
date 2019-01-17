@@ -13,6 +13,14 @@ class TimePicker extends Component {
     }
   }
 
+  componentDidMount() {
+    const { time } = this.state;
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(time)
+    }
+  }
+
   toogleTimePicker = () => {
     const { show } = this.state;
     this.setState({
