@@ -40,7 +40,6 @@ class EventModal extends Component {
   handleSelectChange = (data, event) => {
     const { name } = event;
     if (data) {
-      const { value } = data;
       this.setState({
         [name]: data,
       });

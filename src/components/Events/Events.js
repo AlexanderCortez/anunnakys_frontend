@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Panel, Grid, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import _ from 'lodash';
-import styled from 'styled-components';
 import ContentHeader from '../globalComponents/ContentHeader';
 import MainContainer from '../globalComponents/MainContainer';
 import EventModal from './EventModal';
@@ -17,6 +16,7 @@ class Events extends Component {
       edit: false,
       showModal: false,
       eventToModify: {},
+      events: [],
       snackbar: {
         open: false,
         message: '',
@@ -51,7 +51,7 @@ class Events extends Component {
   setEventsFromProps = (props) => {
     const { events } = props;
     const { edit, eventToModify } = this.state;
-    const newEvents = _.values(events).reverse();
+    const newEvents = _.values(events);
     this.setState({
       events: newEvents,
       eventToModify: edit ? events[eventToModify._id] : {},
@@ -102,7 +102,7 @@ class Events extends Component {
 
   render() {
     const { history } = this.props;
-    const { showModal, snackbar, edit } = this.state;
+    const { showModal, snackbar, edit, events } = this.state;
 
     return (
       <MainContainer
@@ -130,25 +130,26 @@ class Events extends Component {
                   </Button>
                 </Col>
               </Row>
-              <RowSpace />
-              <Tabs
-                // activeKey={this.state.key}
-                // onSelect={this.handleSelect}
-                id="controlled-tab-example"
-              >
-                <Tab eventKey={1} title="Upcoming">
-                  <Upcoming />
-                </Tab>
-                <Tab eventKey={2} title="All">
-                  Tab 2 content
-                </Tab>
-                <Tab eventKey={3} title="Prizes List" disabled>
-                  Tab 3 content
-                </Tab>
-              </Tabs>
             </Grid>
           </Panel.Body>
         </Panel>
+        <Tabs
+          // activeKey={this.state.key}
+          // onSelect={this.handleSelect}
+          id="controlled-tab-example"
+        >
+          <Tab eventKey={1} title="Upcoming">
+            <Upcoming
+              events={events}
+            />
+          </Tab>
+          <Tab eventKey={2} title="All">
+            Tab 2 content
+                </Tab>
+          <Tab eventKey={3} title="Prizes List" disabled>
+            Tab 3 content
+                </Tab>
+        </Tabs>
         <SnackBar
           type={snackbar.type}
           open={snackbar.open}
@@ -159,11 +160,6 @@ class Events extends Component {
     );
   }
 }
-
-const RowSpace = styled.div`
-  height: 15px;
-  width: 100%;
-`;
 
 const mapStateToProps = state => ({
   events: state.EventReducer.events,
