@@ -9,19 +9,24 @@ import types from './types';
 class EventModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showTimePicker: false,
-    }
+    this.state = this.getInitialState();
   }
   
   getInitialState = () => {
+    const commonState = {
+      label: '',
+      value: '',
+    };
+
     return {
       name: '',
-      type: '',
+      type: commonState,
       npc: '',
       place: '',
-      day: '',
+      day: commonState,
       time: '',
+      sound: 'none',
+      showTimePicker: false,
     };
   }
 
@@ -32,16 +37,65 @@ class EventModal extends Component {
     });
   }
 
+  handleSelectChange = (data, event) => {
+    const { name } = event;
+    if (data) {
+      const { value } = data;
+      this.setState({
+        [name]: data,
+      });
+    } else {
+      this.setState({
+        [name]: {
+          label: '',
+          value: '',
+        },
+      });
+    }
+  }
+
   handleTimeChange = (time) => {
+    this.setState({
+      time,
+    });
+  }
+
+  createEvent = () => {
+    const {
+      name,
+      type,
+      npc,
+      place,
+      day,
+      time,
+      sound,
+    } = this.state;
+    const data = {
+      name,
+      type: type.label,
+      npc,
+      place,
+      day: day.label,
+      time,
+      sound,
+    };
+    const { createEvent } = this.props;
+    createEvent(data);
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
+    const { edit } = this.props;
+    if (edit) {
+
+    } else {
+      this.createEvent();
+    }
   }
 
   render() {
     const { show, onHide } = this.props;
-    const { name, showTimePicker, place, npc } = this.state;
+    const { name, showTimePicker, place, npc, type, day } = this.state;
 
     return (
       <Modal
@@ -56,6 +110,7 @@ class EventModal extends Component {
                 <FormGroup>
                   <ControlLabel>Name</ControlLabel>
                   <FormControl
+                    required
                     type="text"
                     value={name}
                     name='name'
@@ -69,6 +124,9 @@ class EventModal extends Component {
                 <Select
                   isClearable
                   options={types}
+                  onChange={this.handleSelectChange}
+                  name='type'
+                  value={type}
                 />
               </Col>
             </Row>
@@ -111,6 +169,9 @@ class EventModal extends Component {
                 <Select 
                   isClearable
                   options={days}
+                  value={day}
+                  name='day'
+                  onChange={this.handleSelectChange}
                 />
               </Col>
             </Row>
