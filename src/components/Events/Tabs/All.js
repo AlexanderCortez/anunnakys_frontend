@@ -4,8 +4,8 @@ import Event from './Event';
 
 class Upcoming extends Component {
   render() {
-    const { events } = this.props;
-    console.log('events', events)
+    const { events, onEdit, onRemove } = this.props;
+
     return (
       <Wrapper>
         <Container>
@@ -15,6 +15,8 @@ class Upcoming extends Component {
                 <Event
                   key={i}
                   event={event}
+                  editAction={onEdit}
+                  removeAction={onRemove}
                 />
               );
             })

@@ -10,7 +10,7 @@ class TimerSelect extends Component {
 
   getInitialState = () => {
     return {
-      hours: this.getHourAndMinuteFormat(moment().hours()),
+      hours: this.getHourAndMinuteFormat(moment().format('h').toString()),
       minutes: this.getHourAndMinuteFormat(moment().minutes()),
       labelTime: moment().format('A').toLowerCase(),
       showHoursTable: false,
