@@ -1,4 +1,4 @@
-import { GET_EVENTS, ADD_EVENT, ERROR } from "../actionTypes/eventTypes";
+import { GET_EVENTS, ADD_EVENT, ERROR, UPDATE_EVENT } from "../actionTypes/eventTypes";
 
 const initialState = {
   events: {},
@@ -31,6 +31,17 @@ const EventReducer = (state = initialState, action) => {
       },
       error: null,
     }
+  }
+  if (type === UPDATE_EVENT) {
+    const event = payload;
+    return {
+      ...state,
+      events: {
+        ...state.events,
+        [event._id]: event,
+      },
+      error: null,
+    };
   }
   return state;
 };

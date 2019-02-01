@@ -5,14 +5,16 @@ import _ from 'lodash';
 import ContentHeader from '../globalComponents/ContentHeader';
 import MainContainer from '../globalComponents/MainContainer';
 import EventModal from './EventModal';
-import { getEvents, addEvent } from '../../actions/eventActions';
+import { getEvents, addEvent, udpdateEvent, deleteEvent } from '../../actions/eventActions';
 import SnackBar from '../globalComponents/SnackBars';
-import Upcoming from './Tabs/Upcoming';
+import All from './Tabs/All';
+import AlarmShown from './AlarmShown';
 
 class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showAlarm: false,
       edit: false,
       showModal: false,
       eventToModify: {},
@@ -46,6 +48,12 @@ class Events extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setEventsFromProps(nextProps);
+  }
+
+  openAlarm = () => {
+    this.setState({
+      showAlarm: true,
+    });
   }
 
   setEventsFromProps = (props) => {
@@ -84,9 +92,42 @@ class Events extends Component {
       });
   }
 
+  editEvent = (data) => {
+    const { modifyEvent } = this.props;
+    modifyEvent(data)
+      .then(() => {
+        this.setState({
+          showModal: false,
+          edit: false,
+          snackbar: {
+            open: true,
+            message: 'Event updated successfully',
+            type: 'success',
+          },
+        });
+      })
+      .catch(() => {
+        const { error } = this.props;
+        this.setState({
+          snackbar: {
+            open: true,
+            message: error,
+            type: 'error',
+          },
+        });
+      });
+  }
+
   handleHide = () => {
     this.setState({
       showModal: false,
+      edit: false,
+    });
+  }
+
+  hideAlarmModal = () =>  {
+    this.setState({
+      showAlarm: false,
     });
   }
 
@@ -100,9 +141,49 @@ class Events extends Component {
     });
   }
 
+  onEdit = (data) => {
+    this.setState({
+      eventToModify: data,
+      showModal: true,
+      edit: true,
+    });
+  }
+
+  onRemove = (eventData) => {
+    const { _id } = eventData;
+    const { removeEvent } = this.props;
+    const data = {
+      id: _id,
+    };
+    removeEvent(data)
+      .then(() => {
+        this.setState({
+          snackbar: {
+            open: true,
+            message: 'Event removed successfully',
+            type: 'success',
+          },
+        });
+      })
+      .catch(() => {
+        const { error } = this.props;
+        this.setState({
+          snackbar: {
+            open: true,
+            message: error,
+            type: 'error',
+          },
+        });
+      });
+  }
+
+  handleSelect = () => {
+    
+  }
+
   render() {
     const { history } = this.props;
-    const { showModal, snackbar, edit, events } = this.state;
+    const { showModal, snackbar, edit, events, eventToModify, showAlarm } = this.state;
 
     return (
       <MainContainer
@@ -115,8 +196,10 @@ class Events extends Component {
           <EventModal 
             show={showModal}
             onHide={this.handleHide}
+            editEvent={this.editEvent}
             createEvent={this.createEvent}
             edit={edit}
+            eventToModify={eventToModify}
           />
           <Panel.Body>
             <Grid fluid>
@@ -134,22 +217,29 @@ class Events extends Component {
           </Panel.Body>
         </Panel>
         <Tabs
-          // activeKey={this.state.key}
-          // onSelect={this.handleSelect}
+          activeKey={2}
+          onSelect={this.handleSelect}
           id="controlled-tab-example"
         >
           <Tab eventKey={1} title="Upcoming">
-            <Upcoming
+            Tab 1 content            
+          </Tab>
+          <Tab eventKey={2} title="All">
+            <All
+              openAlarm={this.openAlarm}
+              onRemove={this.onRemove}
+              onEdit={this.onEdit}
               events={events}
             />
           </Tab>
-          <Tab eventKey={2} title="All">
-            Tab 2 content
-                </Tab>
           <Tab eventKey={3} title="Prizes List" disabled>
             Tab 3 content
-                </Tab>
+          </Tab>
         </Tabs>
+        <AlarmShown
+          show={showAlarm}
+          onHide={this.hideAlarmModal}
+        />
         <SnackBar
           type={snackbar.type}
           open={snackbar.open}
@@ -169,8 +259,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getAllEvents: () => dispatch(getEvents()),
   createEvent: data => dispatch(addEvent(data)),
-  // modifyUser: data => dispatch(updateUser(data)),
-  // removeUser: data => dispatch(deleteUser(data)),
+  modifyEvent: data => dispatch(udpdateEvent(data)),
+  removeEvent: data => dispatch(deleteEvent(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Events);

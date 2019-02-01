@@ -30,6 +30,42 @@ class EventModal extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { edit, eventToModify, show } = nextProps;
+    if (edit) {
+      const {
+        name,
+        type,
+        npc,
+        place,
+        day,
+        time,
+        sound,
+        _id,
+      } = eventToModify;
+      this.setState({
+        id: _id,
+        name,
+        type: {
+          label: type,
+          value: type.toLowerCase(),
+        },
+        npc,
+        place,
+        day: {
+          label: day,
+          value: day.toLowerCase(),
+        },
+        time,
+        sound,
+      });
+    } else {
+      if (!show) {
+        this.setState(this.getInitialState())
+      }
+    }
+  }
+
   handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({
@@ -82,19 +118,45 @@ class EventModal extends Component {
     createEvent(data);
   }
 
+  editEvent = () => {
+    const {
+      name,
+      type,
+      npc,
+      place,
+      day,
+      time,
+      sound,
+      id,
+    } = this.state;
+
+    const data = {
+      id,
+      name,
+      type: type.label,
+      npc,
+      place,
+      day: day.label,
+      time,
+      sound,
+    };
+    const { editEvent } = this.props;
+    editEvent(data);
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
     const { edit } = this.props;
     if (edit) {
-
+      this.editEvent();  
     } else {
       this.createEvent();
     }
   }
 
   render() {
-    const { show, onHide } = this.props;
-    const { name, showTimePicker, place, npc, type, day } = this.state;
+    const { show, onHide, edit } = this.props;
+    const { name, showTimePicker, place, npc, type, day, time } = this.state;
 
     return (
       <Modal
@@ -159,8 +221,10 @@ class EventModal extends Component {
               <Col md={6}>
                 <ControlLabel>Time</ControlLabel>
                 <TimePicker
+                  editing={edit}
                   onChange={this.handleTimeChange}
                   show={showTimePicker}
+                  timeOnEdit={time}
                 />
               </Col>
               <Col md={6}>

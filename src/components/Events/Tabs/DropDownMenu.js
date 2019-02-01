@@ -27,6 +27,31 @@ class MenuListComposition extends React.Component {
     this.setState({ open: false });
   };
 
+  customClose = (event, fun) => {
+    if (this.anchorEl.contains(event.target)) {
+      return;
+    }
+    this.setState({ open: false }, fun);
+  }
+
+  onEdit = (e) => {
+    this.customClose(e, () => {
+      const { onEdit } = this.props;
+      if (onEdit) {
+        onEdit();
+      }
+    });
+  }
+
+  onRemove = (e) => {
+    this.customClose(e, () => {
+      const { onRemove } = this.props;
+      if (onRemove) {
+        onRemove();
+      }
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const { open } = this.state;
@@ -50,8 +75,8 @@ class MenuListComposition extends React.Component {
             open={open}
             onClose={this.handleClose}
           >
-            <MenuItem style={{ fontSize: '13px' }} onClick={this.handleClose}>Edit</MenuItem>
-            <MenuItem style={{ fontSize: '13px' }} onClick={this.handleClose}>Remove</MenuItem>
+            <MenuItem style={{ fontSize: '13px' }} onClick={this.onEdit}>Edit</MenuItem>
+            <MenuItem style={{ fontSize: '13px' }} onClick={this.onRemove}>Remove</MenuItem>
           </Menu>
         </div>
       </div>

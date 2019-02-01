@@ -4,8 +4,8 @@ import Event from './Event';
 
 class Upcoming extends Component {
   render() {
-    const { events } = this.props;
-    console.log('events', events)
+    const { events, onEdit, onRemove, openAlarm } = this.props;
+
     return (
       <Wrapper>
         <Container>
@@ -13,8 +13,11 @@ class Upcoming extends Component {
             events.map((event, i) => {
               return (
                 <Event
+                  openAlarm={openAlarm}
                   key={i}
                   event={event}
+                  editAction={onEdit}
+                  removeAction={onRemove}
                 />
               );
             })

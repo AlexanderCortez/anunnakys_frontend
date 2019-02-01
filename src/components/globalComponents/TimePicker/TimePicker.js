@@ -7,15 +7,20 @@ import TimerSelect from './TimerSelect';
 class TimePicker extends Component {
   constructor(props) {
     super(props);
+    const now = moment().format('hh:mm A');
     this.state = {
       show: false,
-      time: moment().format('hh:mm A'),
+      time: now,
     }
   }
 
   componentDidMount() {
-    const { time } = this.state;
-    const { onChange } = this.props;
+    const { onChange, editing, timeOnEdit } = this.props;
+    const now = moment().format('hh:mm A');
+    const time = editing ? timeOnEdit : now;
+    this.setState({
+      time,
+    });
     if (onChange) {
       onChange(time)
     }
