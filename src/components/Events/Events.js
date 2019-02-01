@@ -8,11 +8,13 @@ import EventModal from './EventModal';
 import { getEvents, addEvent, udpdateEvent, deleteEvent } from '../../actions/eventActions';
 import SnackBar from '../globalComponents/SnackBars';
 import All from './Tabs/All';
+import AlarmShown from './AlarmShown';
 
 class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showAlarm: false,
       edit: false,
       showModal: false,
       eventToModify: {},
@@ -46,6 +48,12 @@ class Events extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setEventsFromProps(nextProps);
+  }
+
+  openAlarm = () => {
+    this.setState({
+      showAlarm: true,
+    });
   }
 
   setEventsFromProps = (props) => {
@@ -117,6 +125,12 @@ class Events extends Component {
     });
   }
 
+  hideAlarmModal = () =>  {
+    this.setState({
+      showAlarm: false,
+    });
+  }
+
   handleCloseSnackBar = () => {
     const { snackbar } = this.state;
     this.setState({
@@ -169,7 +183,7 @@ class Events extends Component {
 
   render() {
     const { history } = this.props;
-    const { showModal, snackbar, edit, events, eventToModify } = this.state;
+    const { showModal, snackbar, edit, events, eventToModify, showAlarm } = this.state;
 
     return (
       <MainContainer
@@ -212,6 +226,7 @@ class Events extends Component {
           </Tab>
           <Tab eventKey={2} title="All">
             <All
+              openAlarm={this.openAlarm}
               onRemove={this.onRemove}
               onEdit={this.onEdit}
               events={events}
@@ -221,6 +236,10 @@ class Events extends Component {
             Tab 3 content
           </Tab>
         </Tabs>
+        <AlarmShown
+          show={showAlarm}
+          onHide={this.hideAlarmModal}
+        />
         <SnackBar
           type={snackbar.type}
           open={snackbar.open}

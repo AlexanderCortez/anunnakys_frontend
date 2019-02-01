@@ -11,6 +11,7 @@ class Event extends Component {
     hours: 0,
     minutes: 0,
     seconds: 0,
+    keepSettingPicker: true,
   }
 
   componentDidMount() {
@@ -58,6 +59,47 @@ class Event extends Component {
     return timeLeft;
   }
 
+  AlarmPicker = () => {
+    setTimeout(() => {
+      const { seconds, minutes, hours } = this.state;
+      let newSeconds = parseInt(seconds, 10);
+      let newMinutes = parseInt(minutes, 10);
+      let newHours = parseInt(hours, 10);
+      if (newSeconds === 0) {
+        if (newMinutes === 0) {
+          if (newHours === 0) {
+            const { openAlarm } = this.props;
+            openAlarm();
+            this.setState({
+              keepSettingPicker: false,
+            })
+          } else {
+            newMinutes = 59;
+            newHours -= 1;
+          }
+        } else {
+          newMinutes -= 1;
+          newSeconds = 59;
+        }
+      } else {
+        newSeconds -= 1;
+      }
+      // console.log('newMinutes', newMinutes)
+      this.setState({
+        hours: this.getTimeFormat(newHours),
+        seconds: this.getTimeFormat(newSeconds),
+        minutes: this.getTimeFormat(newMinutes),
+      }, () => {
+        const { hours, seconds, minutes } = this.state;
+        // console.log('here ', this.state.seconds)
+        const { keepSettingPicker } = this.state;
+          if (keepSettingPicker) {
+            this.AlarmPicker()
+          }
+      })
+    }, 1000);
+  }
+
   setAlarm = () => {
     const currentTime = this.getCurrentTime();
     const eventTime = this.getTimeForEvent();
@@ -69,44 +111,51 @@ class Event extends Component {
     if (today === day.toLowerCase()) {
       if (currentTime.allMinutes < eventTime.allMinutes) {
         // console.log(currentTime, 'here')
-        const minutes = eventTime.minutes - currentTime.minutes;
+        let minutes = eventTime.minutes - currentTime.minutes;
+        let hours = eventTime.hours - (currentTime.hours);
+        console.log('hours', hours)
+        console.log('eventTime.hours', eventTime)
+        console.log('currentTime.hours', currentTime)
+        if (hours < 0) {
+          hours = 0;
+        }
+        if (minutes < 0) {
+          minutes = 60 + minutes;
+          // hours = hours - 1;
+        }
         this.setState({
-          hours: eventTime.hours - currentTime.hours,
-          minutes: missingSeconds !== 0 ? (minutes - 1) : minutes,
-          seconds: missingSeconds,
-        });
+          hours: this.getTimeFormat(hours),
+          minutes: this.getTimeFormat(minutes),
+          seconds: this.getTimeFormat(missingSeconds),
+        }, () => this.AlarmPicker());
       }
       if (currentTime.allMinutes === eventTime.allMinutes) {
         console.log('open alarm')
       }
       if (currentTime.allMinutes > eventTime.allMinutes) {
-        console.log(eventTime.minutes)
         const hours = 7 * 24;
         const minutes = eventTime.minutes;
         this.setState({
           hours,
           minutes: missingSeconds !== 0 ? (minutes - 1) : minutes,
           seconds: missingSeconds,
-        });  
+        }, () => this.AlarmPicker());
       }
     } else {
       // const left = moment(`${day} ${time}`, 'ddd hh:mm A').toDate();
-      // console.log('left', left - moment())
       let hours = eventTime.hours - (currentTime.hours + 1);
       // console.log('ine here', eventTime)
       let minutes = eventTime.minutes - currentTime.minutes;
-      // const missingMinutes = 60 - minutes;
+      const missingSeconds = 60 - moment().format('ss');
       if (minutes < 0) {
-        console.log('minues', minutes)
-        console.log('eve', event.name)
         minutes = 60 + minutes;
         // hours = hours - 1;
       }
       this.setState({
-        hours,
-        minutes,
-        // seconds: missingSeconds,
-      });
+        hours: this.getTimeFormat(hours),
+        minutes: this.getTimeFormat(minutes),
+        seconds: this.getTimeFormat(missingSeconds),
+      }, () => this.AlarmPicker());
     }
     // const { hours, minutes } = timeLeft;
     // this.timeIsBefore(eventTimeAsDate);
@@ -134,6 +183,8 @@ class Event extends Component {
       allMinutes: allMinutes + (allDays * 24 * 60),
     };
   }
+
+  getTimeFormat = time => (time < 10 ? `0${time}` : time);
 
   onEdit = () => {
     const { event, editAction } = this.props;
