@@ -14,6 +14,7 @@ class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      shownEvents: [],
       showAlarm: false,
       edit: false,
       showModal: false,
@@ -52,6 +53,15 @@ class Events extends Component {
 
   openAlarm = () => {
     this.setState({
+      showAlarm: true,
+    });
+  }
+
+  setEventToShow = (event) => {
+    let { shownEvents } = this.state;
+    shownEvents.push(event);
+    this.setState({
+      shownEvents,
       showAlarm: true,
     });
   }
@@ -230,6 +240,7 @@ class Events extends Component {
               onRemove={this.onRemove}
               onEdit={this.onEdit}
               events={events}
+              setEventToShow={this.setEventToShow}
             />
           </Tab>
           <Tab eventKey={3} title="Prizes List" disabled>

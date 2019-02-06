@@ -4,7 +4,13 @@ import Event from './Event';
 
 class Upcoming extends Component {
   render() {
-    const { events, onEdit, onRemove, openAlarm } = this.props;
+    const {
+      events,
+      onEdit,
+      onRemove,
+      openAlarm,
+      setEventToShow,
+    } = this.props;
 
     return (
       <Wrapper>
@@ -18,6 +24,7 @@ class Upcoming extends Component {
                   event={event}
                   editAction={onEdit}
                   removeAction={onRemove}
+                  setEventToShow={setEventToShow}
                 />
               );
             })

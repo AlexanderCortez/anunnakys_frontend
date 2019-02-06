@@ -12,14 +12,24 @@ class Event extends Component {
     minutes: 0,
     seconds: 0,
     keepSettingPicker: true,
+    event: {},
   }
 
   componentDidMount() {
-    this.setAlarm();
+    const { event } = this.props;
+    this.setState({
+      event,
+    }, () => this.setAlarm(this.state, true))
   }
 
-  timeIsBefore = (target) => {
-    console.log(moment('hh:mm A').isBefore(moment(target).format('hh:mm A')));
+  componentWillReceiveProps(nextProps) {
+    const { event } = nextProps;
+    const eventFromState = this.state.event;
+    if (!_.isEqual(event, eventFromState)) {
+      this.setState({
+        event,
+      }, () => this.setAlarm(nextProps))
+    }
   }
 
   getDays = (targetDay) => {
@@ -61,21 +71,22 @@ class Event extends Component {
 
   AlarmPicker = () => {
     setTimeout(() => {
-      const { seconds, minutes, hours } = this.state;
+      const { seconds, minutes, hours, event } = this.state;
       let newSeconds = parseInt(seconds, 10);
       let newMinutes = parseInt(minutes, 10);
       let newHours = parseInt(hours, 10);
       if (newSeconds === 0) {
         if (newMinutes === 0) {
           if (newHours === 0) {
-            const { openAlarm } = this.props;
-            openAlarm();
+            const { setEventToShow } = this.props;
+            setEventToShow(event);
             this.setState({
               keepSettingPicker: false,
-            })
+            });
           } else {
             newMinutes = 59;
             newHours -= 1;
+            newSeconds = 59;
           }
         } else {
           newMinutes -= 1;
@@ -84,14 +95,11 @@ class Event extends Component {
       } else {
         newSeconds -= 1;
       }
-      // console.log('newMinutes', newMinutes)
       this.setState({
         hours: this.getTimeFormat(newHours),
         seconds: this.getTimeFormat(newSeconds),
         minutes: this.getTimeFormat(newMinutes),
       }, () => {
-        const { hours, seconds, minutes } = this.state;
-        // console.log('here ', this.state.seconds)
         const { keepSettingPicker } = this.state;
           if (keepSettingPicker) {
             this.AlarmPicker()
@@ -100,69 +108,88 @@ class Event extends Component {
     }, 1000);
   }
 
-  setAlarm = () => {
+  setAlarm = (props, alarmPicker) => {
     const currentTime = this.getCurrentTime();
     const eventTime = this.getTimeForEvent();
-    const { event } = this.props;
-    const { time, day } = event;
+    const { event } = props;
+    const { day } = event;
     const today = moment().format('dddd').toLowerCase();
     const currentSeconds = moment().format('ss');
     const missingSeconds = 60 - currentSeconds;
     if (today === day.toLowerCase()) {
       if (currentTime.allMinutes < eventTime.allMinutes) {
-        // console.log(currentTime, 'here')
         let minutes = eventTime.minutes - currentTime.minutes;
         let hours = eventTime.hours - (currentTime.hours);
-        console.log('hours', hours)
-        console.log('eventTime.hours', eventTime)
-        console.log('currentTime.hours', currentTime)
-        if (hours < 0) {
-          hours = 0;
+        const allMins = eventTime.allMinutes - currentTime.allMinutes;
+        if ((allMins) < 0) {
+          if ((allMins * -1) < 60) {
+            hours = 0;
+          }
+        } else {
+          if (allMins < 60 && allMins > 0) {
+            hours = hours - 1;
+          }
         }
         if (minutes < 0) {
           minutes = 60 + minutes;
-          // hours = hours - 1;
+        }
+        minutes = minutes - 1;
+        if (minutes < 0) {
+          minutes = 0;
+        }
+        if ((hours * 60) > (eventTime.allMinutes - currentTime.allMinutes)) {
+          hours = hours - 1;
+        }
+        if (hours < 0) {
+          hours = 0;
         }
         this.setState({
           hours: this.getTimeFormat(hours),
           minutes: this.getTimeFormat(minutes),
           seconds: this.getTimeFormat(missingSeconds),
-        }, () => this.AlarmPicker());
+        }, () => {
+          if (alarmPicker) {
+            this.AlarmPicker();
+          }
+        });
       }
       if (currentTime.allMinutes === eventTime.allMinutes) {
-        console.log('open alarm')
+        const { setEventToShow } = this.props;
+        setEventToShow(event);
+        this.setState({
+          keepSettingPicker: false,
+        });
       }
       if (currentTime.allMinutes > eventTime.allMinutes) {
         const hours = 7 * 24;
         const minutes = eventTime.minutes;
         this.setState({
-          hours,
-          minutes: missingSeconds !== 0 ? (minutes - 1) : minutes,
-          seconds: missingSeconds,
-        }, () => this.AlarmPicker());
+          hours: this.getTimeFormat(hours),
+          minutes: this.getTimeFormat(missingSeconds !== 0 ? (minutes - 1) : minutes),
+          seconds: this.getTimeFormat(missingSeconds),
+        }, () => {
+          if (alarmPicker) {
+            this.AlarmPicker();
+          }
+        });
       }
     } else {
-      // const left = moment(`${day} ${time}`, 'ddd hh:mm A').toDate();
       let hours = eventTime.hours - (currentTime.hours + 1);
-      // console.log('ine here', eventTime)
       let minutes = eventTime.minutes - currentTime.minutes;
       const missingSeconds = 60 - moment().format('ss');
       if (minutes < 0) {
         minutes = 60 + minutes;
-        // hours = hours - 1;
       }
       this.setState({
         hours: this.getTimeFormat(hours),
         minutes: this.getTimeFormat(minutes),
         seconds: this.getTimeFormat(missingSeconds),
-      }, () => this.AlarmPicker());
+      }, () => {
+        if (alarmPicker) {
+          this.AlarmPicker();
+        }
+      });
     }
-    // const { hours, minutes } = timeLeft;
-    // this.timeIsBefore(eventTimeAsDate);
-    // console.log(time)
-    // this.setState({
-    //   time: `${hours}:${minutes}:00`,
-    // });
   }
 
   getTime = (allDays, hours, minutes, label) => {
@@ -198,7 +225,7 @@ class Event extends Component {
   
   render() {
     const { event } = this.props;
-    const { time, hours, minutes, seconds } = this.state;
+    const { hours, minutes, seconds } = this.state;
     return (
       <Wrraper>
         <Header>
