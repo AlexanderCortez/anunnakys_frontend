@@ -7,9 +7,10 @@ import Events from '../Events/Events';
 
 const Main = () => (
   <Switch>
-    <Route path='/users' exact component={Users} />
-    <Route path='/events' exact component={Events} />
-    <Route path='/' exact component={HomePage} />
+    <Route path='/users' component={Users} />
+    <Route path='/events' component={Events} />
+    <Route path='/' component={HomePage} />
+    {/* <Route path='/' component={Error404} /> */}
   </Switch>
 );
 

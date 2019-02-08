@@ -8,15 +8,28 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './store';
+import { checkToken } from './helpers/checkToken';
+import { LOGIN } from './actionTypes/appTypes';
 
-axios.defaults.baseURL = 'http://localhost:3001'
+// axios.defaults.baseURL = 'http://localhost:3001'
 
-ReactDOM.render(
-    <Provider store={store}>
-      <Router>
-        <App />
-      </Router>
-    </Provider>
+checkToken()
+  .then(() => {
+    store.dispatch({
+      type: LOGIN,
+    });
+    renderDOM();
+  })
+  .catch(() => {
+    renderDOM();
+  });
+
+const renderDOM = () => ReactDOM.render(
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>
   , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

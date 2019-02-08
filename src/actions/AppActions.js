@@ -1,5 +1,7 @@
-import _ from 'lodash/fp'
-
+import _ from 'lodash/fp';
+import axios from 'axios';
+import { LOGIN } from '../actionTypes/appTypes';
+import { setAuthorizationToken } from '../helpers/setAuthorizationToken';
 const goTo = (history, route) => {
   history.push(route);
 };
@@ -21,8 +23,25 @@ const getContainerRect = (container) => {
   )(container)
 }
 
+
+const signIn = data => dispatch => new Promise((resolve, reject) => {
+  axios.post('/api/auth/signin/', data)
+    .then((response) => {
+      const { token } = response.data;
+      setAuthorizationToken(token)
+      dispatch({
+        type: LOGIN,
+      });
+      resolve();
+    })
+    .catch((err) => {
+      reject();
+    })
+});
+
 export {
   goTo,
   getActualRoute,
   getContainerRect,
+  signIn,
 };
