@@ -10,6 +10,7 @@ class Upcoming extends Component {
       onRemove,
       openAlarm,
       setEventToShow,
+      canEdit
     } = this.props;
 
     return (
@@ -25,6 +26,7 @@ class Upcoming extends Component {
                   editAction={onEdit}
                   removeAction={onRemove}
                   setEventToShow={setEventToShow}
+                  canEdit={canEdit}
                 />
               );
             })

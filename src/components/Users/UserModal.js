@@ -15,7 +15,7 @@ class UserModal extends Component {
       name: '',
       password: '',
       username: '',
-      isAdmin: false,
+      role: 'user',
       id: null,
     }
   }
@@ -26,14 +26,14 @@ class UserModal extends Component {
       const {
         name,
         username,
-        isAdmin,
+        role,
         _id,
       } = userToModify;
       this.setState({
         id: _id,
         name,
         username,
-        isAdmin,
+        role,
       });
     } else {
       if (!show) {
@@ -50,9 +50,10 @@ class UserModal extends Component {
   }
 
   handleCheckboxChange = (e) => {
+    const { checked } = e.target;
     this.setState({
-      isAdmin: e.target.checked,
-    })
+      role: checked ? 'admin' : 'user',
+    });
   }
 
   createUser = () => {
@@ -60,14 +61,14 @@ class UserModal extends Component {
     const {
       username,
       password,
-      isAdmin,
+      role,
       name,
     } = this.state;
     const data = {
       username,
       password,
       name,
-      isAdmin, 
+      role, 
     }
     createUser(data);
   }
@@ -77,7 +78,7 @@ class UserModal extends Component {
     const {
       username,
       password,
-      isAdmin,
+      role,
       name,
       id,
     } = this.state;
@@ -91,7 +92,7 @@ class UserModal extends Component {
       id,
       username,
       name,
-      isAdmin,
+      role,
       ...setPassword,
     }
     modifyUser(data);
@@ -127,7 +128,7 @@ class UserModal extends Component {
 
   render() {
     const { show, onHide, edit } = this.props;
-    const { name, password, username, isAdmin } = this.state;
+    const { name, password, username, role } = this.state;
 
     return (
       <Modal
@@ -191,7 +192,7 @@ class UserModal extends Component {
                 <ButtonContainer>
                   <Checkbox
                     name='isAdmin'
-                    defaultChecked={isAdmin}
+                    defaultChecked={role === 'admin'}
                     onChange={this.handleCheckboxChange}
                   >
                     Is Admin

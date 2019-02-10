@@ -1,8 +1,8 @@
 import React from 'react';
 
 const getAdminLabel = (cell, row) => {
-  const isAdmin = row.isAdmin;
-  if (isAdmin) {
+  const { role } = row;
+  if (role === 'admin') {
     return (
       <span>
         ADMIN

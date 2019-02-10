@@ -1,4 +1,4 @@
-import { ERROR, LOGIN } from "../actionTypes/appTypes";
+import { ERROR, LOGIN, SET_CURRENT_USER } from "../actionTypes/appTypes";
 
 const initialState = {
   currentUser: {},
@@ -20,6 +20,13 @@ const AppReducer = (state = initialState, action) => {
       logged: true,
       error: null,
     };
+  }
+  if (type === SET_CURRENT_USER) {
+    return {
+      ...state,
+      currentUser: payload,
+      error: null,
+    }
   }
   return state;
 };
