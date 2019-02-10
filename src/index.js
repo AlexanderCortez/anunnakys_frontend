@@ -8,14 +8,18 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './store';
 import { checkToken } from './helpers/checkToken';
-import { LOGIN } from './actionTypes/appTypes';
+import { LOGIN, SET_CURRENT_USER } from './actionTypes/appTypes';
 
-// axios.defaults.baseURL = 'http://localhost:3001'
+axios.defaults.baseURL = 'http://localhost:3001'
 
 checkToken()
-  .then(() => {
+  .then(({ user }) => {
     store.dispatch({
       type: LOGIN,
+    });
+    store.dispatch({
+      type: SET_CURRENT_USER,
+      payload: user,
     });
     renderDOM();
   })

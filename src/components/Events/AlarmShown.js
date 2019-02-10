@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import { Modal } from 'react-bootstrap';
 import styled from 'styled-components';
+import { Howl, Howler } from 'howler';
 
 class AlarmShown extends Component {
   render() {
+    const sound = new Howl({
+      src: ['./assets/audio/beep.mp3']
+    });
+    const { show } = this.props;
+    if (show) {
+      sound.play();
+    }
     return (
       <Modal
         {...this.props}

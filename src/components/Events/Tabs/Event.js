@@ -224,7 +224,7 @@ class Event extends Component {
   }
   
   render() {
-    const { event } = this.props;
+    const { event, canEdit } = this.props;
     const { hours, minutes, seconds } = this.state;
     return (
       <Wrraper>
@@ -235,10 +235,15 @@ class Event extends Component {
             </span>
             <p>{event.day}, {event.time}</p>
           </div>
-          <DropDownMenu 
-            onEdit={this.onEdit}
-            onRemove={this.onRemove}
-          />
+          {
+            canEdit
+              && (
+                <DropDownMenu
+                  onEdit={this.onEdit}
+                  onRemove={this.onRemove}
+                />
+              )
+          }
         </Header>
         <Timer>
           {hours}:{minutes}:{seconds}

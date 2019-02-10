@@ -6,10 +6,12 @@ import MainBody from './components/MainBody';
 import Login from './components/Login/Login';
 import Authenticate from './helpers/Authenticate';
 
-const AppMain = () => (
+const AppMain = ({ user }) => (
   <Wrapper>
     <MainBody>
-      <Main />
+      <Main
+        user={user}
+      />
     </MainBody>
   </Wrapper>
 )

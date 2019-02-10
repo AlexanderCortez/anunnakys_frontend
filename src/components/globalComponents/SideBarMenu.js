@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { goTo, getActualRoute } from '../../actions/AppActions';
 
 class SideBarMenu extends Component {
@@ -16,28 +17,40 @@ class SideBarMenu extends Component {
         icon: 'fas fa-users',
         text: 'Users',
         route: '/users',
+        canAccess: {
+          admin: true,
+        },
       },
       {
         icon: 'fas fa-calendar-week',
         text: 'Events',
         route: '/events',
+        canAccess: {
+          admin: true,
+          user: true,
+        },
       },
     ];
 
-    return options.map((item, index) => (
-      <Item
-        className={this.isAnActiveRoute(item) ? 'active': ''}
-        onClick={() => goTo(history, item.route)}
-        key={index}
-      >
-        <div className='icon'>
-          <i className={item.icon} />
-        </div>
-        <div className='text'>
-          {item.text}
-        </div>
-      </Item>
-    ));
+    return options.map((item, index) => {
+      const { user } = this.props;
+      if (item.canAccess.hasOwnProperty(user.role)) {
+        return (
+          <Item
+            className={this.isAnActiveRoute(item) ? 'active' : ''}
+            onClick={() => goTo(history, item.route)}
+            key={index}
+          >
+            <div className='icon'>
+              <i className={item.icon} />
+            </div>
+            <div className='text'>
+              {item.text}
+            </div>
+          </Item>
+        );
+      }
+    });
   }
 
   render() {
@@ -91,4 +104,8 @@ const Item = styled.div`
   }
 `;
 
-export default SideBarMenu;
+const mapStateToProps = state => ({
+  user: state.AppReducer.currentUser,
+});
+
+export default connect(mapStateToProps)(SideBarMenu)

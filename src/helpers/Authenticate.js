@@ -6,16 +6,18 @@ const authFunction = (AppComponents) => {
   class Authenticate extends Component {
     state = {
       canAccess: false,
+      user: {},
     }
 
     componentWillMount() {
-      const { logged, history } = this.props;
+      const { logged, history, user } = this.props;
       if (!logged) {
         history.push('/login');
       } else {
         this.setState({
+          user,
           canAccess: true,
-        })
+        });
       }
     }
 
@@ -27,11 +29,13 @@ const authFunction = (AppComponents) => {
     }
 
     render() {
-      const { canAccess } = this.state;
+      const { canAccess, user } = this.state;
       return (
         canAccess
           && (
-            <AppComponents />
+            <AppComponents
+              user={user}
+            />
           )        
       );
     }
@@ -39,6 +43,7 @@ const authFunction = (AppComponents) => {
 
   const mapStateToProps = state => ({
     logged: state.AppReducer.logged,
+    user: state.AppReducer.currentUser,
   });
 
   return connect(mapStateToProps)(withRouter(Authenticate));

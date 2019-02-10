@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { Logout } from '../../actions/AppActions';
 
 class SideBarConfigMenu extends Component {
   render() {
+    const { signOut } = this.props;
     return (
       <Wrapper>
-        {/* config menu */}
+        <button
+          type='button'
+          onClick={signOut}
+          style={{
+            color: 'black'
+          }}
+        >
+          Sign out
+        </button>
       </Wrapper>
     );
   }
@@ -24,5 +35,8 @@ const Wrapper = styled.div`
   background-color: rgba(0,0,0,0.75);
   color: white;
 `;
+const mapDispatchToProps = dispatch => ({
+  signOut: () => dispatch(Logout()),
+});
 
-export default SideBarConfigMenu;
+export default connect(null, mapDispatchToProps)(SideBarConfigMenu)

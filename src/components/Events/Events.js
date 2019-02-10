@@ -192,8 +192,8 @@ class Events extends Component {
   }
 
   render() {
-    const { history } = this.props;
-    const { showModal, snackbar, edit, events, eventToModify, showAlarm } = this.state;
+    const { history, user } = this.props;
+    const { showModal, snackbar, edit, events, eventToModify, showAlarm, shownEvents } = this.state;
 
     return (
       <MainContainer
@@ -202,30 +202,27 @@ class Events extends Component {
         <ContentHeader
           title='Events'
         />
-        <Panel>
-          <EventModal 
-            show={showModal}
-            onHide={this.handleHide}
-            editEvent={this.editEvent}
-            createEvent={this.createEvent}
-            edit={edit}
-            eventToModify={eventToModify}
-          />
-          <Panel.Body>
-            <Grid fluid>
-              <Row>
-                <Col md={12}>
-                  <Button
-                    onClick={() => this.setState({ showModal: true })}
-                    bsStyle='success'
-                  >
-                    Add a New Event
-                  </Button>
-                </Col>
-              </Row>
-            </Grid>
-          </Panel.Body>
-        </Panel>
+        {
+          user.role === 'admin'
+            && (
+              <Panel>
+                <Panel.Body>
+                  <Grid fluid>
+                    <Row>
+                      <Col md={12}>
+                        <Button
+                          onClick={() => this.setState({ showModal: true })}
+                          bsStyle='success'
+                        >
+                          Add a New Event
+                    </Button>
+                      </Col>
+                    </Row>
+                  </Grid>
+                </Panel.Body>
+              </Panel>
+            )
+        }
         <Tabs
           activeKey={2}
           onSelect={this.handleSelect}
@@ -241,6 +238,7 @@ class Events extends Component {
               onEdit={this.onEdit}
               events={events}
               setEventToShow={this.setEventToShow}
+              canEdit={user.role === 'admin'}
             />
           </Tab>
           <Tab eventKey={3} title="Prizes List" disabled>
@@ -248,6 +246,7 @@ class Events extends Component {
           </Tab>
         </Tabs>
         <AlarmShown
+          shownEvents={shownEvents}
           show={showAlarm}
           onHide={this.hideAlarmModal}
         />
@@ -257,6 +256,14 @@ class Events extends Component {
           message={snackbar.message}
           onClose={this.handleCloseSnackBar}
         />
+        <EventModal
+          show={showModal}
+          onHide={this.handleHide}
+          editEvent={this.editEvent}
+          createEvent={this.createEvent}
+          edit={edit}
+          eventToModify={eventToModify}
+        />
       </MainContainer>
     );
   }
@@ -265,6 +272,7 @@ class Events extends Component {
 const mapStateToProps = state => ({
   events: state.EventReducer.events,
   error: state.EventReducer.error,
+  user: state.AppReducer.currentUser,
 });
 
 const mapDispatchToProps = dispatch => ({
