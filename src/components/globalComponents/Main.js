@@ -28,23 +28,23 @@ const privateRoutes = [
 const RenderNoPermissionPage = () => "You do not have acces to this page";
 const RenderNotFoundPage = () => "This page does not exist.";
 
-const getRoutes = (user) => (
+const getRoutes = user => (
   <React.Fragment>
     <Switch>
-    {
-      privateRoutes.map(({
-        component, canAccess, path, isExact,
-      }) => {
-        if (user.role) {
-          if (canAccess.hasOwnProperty(user.role)) {
-            return <Route key={path} path={path} component={component} exact={isExact} />;
+      {
+        privateRoutes.map(({
+          component, canAccess, path, isExact,
+        }) => {
+          if (user.role) {
+            if (canAccess.hasOwnProperty(user.role)) {
+              return <Route key={path} path={path} component={component} exact={isExact} />;
+            }
           }
-        }
-        return <Route key={path} path={path} exact={isExact} component={RenderNoPermissionPage} />
-      })
-    }
-    <Route exact path='/' component={HomePage} />
-    <Route component={RenderNotFoundPage} />
+          return <Route key={path} path={path} exact={isExact} component={RenderNoPermissionPage} />
+        })
+      }
+      <Route exact path='/' component={HomePage} />
+      <Route component={RenderNotFoundPage} />
     </Switch>
   </React.Fragment>
 );

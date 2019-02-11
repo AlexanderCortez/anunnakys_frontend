@@ -1,5 +1,6 @@
 module.exports = {
     "extends": "airbnb",
+    "parser": "babel-eslint",
     "rules": {
         "react/jsx-filename-extension": 0,
         "react/no-deprecated": 0,
@@ -12,7 +13,6 @@ module.exports = {
         "no-underscore-dangle": ["error", { "allow": ["_d"] }],
         "object-curly-newline": 0,
     },
-    "plugins": ["flowtype"],
     "env": {
         "browser": true
     }
